@@ -7,11 +7,17 @@
   <meta name="author" content="Pippo.Lai">
   
   <meta name="description" content="REPL Read-Eval-Print-Loop
-Scala 解释器2.1 下载 Scala, http://scala-lang.org/2.2 解压, tar xvf scala.tar.gz2.3 环境变量1
+Scala 解释器
+下载 Scala, http://scala-lang.org/
+解压, tar xvf scala.tar.gz
+环境变量
+1
 2
 PATH=$PATH:$SCALA_HOME/bin
 export PATH
-">
+
+
+执行 sca">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -64,23 +70,67 @@ export PATH
     </header>
     <div class="entry">
       
-        <ol>
-<li>REPL Read-Eval-Print-Loop</li>
-<li>Scala 解释器<br>2.1 下载 Scala, <a href="http://scala-lang.org/" target="_blank">http://scala-lang.org/</a><br>2.2 解压, tar xvf scala.tar.gz<br>2.3 环境变量<figure class="highlight lang-shell"><table><tr><td class="gutter"><pre>1
+        <h3>REPL Read-Eval-Print-Loop</h3>
+<h3>Scala 解释器</h3>
+<pre><code>下载 Scala, http:<span class="comment">//scala-lang.org/</span>
+解压, tar xvf scala<span class="variable">.tar</span><span class="variable">.gz</span>
+环境变量</code></pre>
+<figure class="highlight lang-shell"><table><tr><td class="gutter"><pre>1
 2
 </pre></td><td class="code"><pre>PATH=<span class="variable">$PATH</span>:<span class="variable">$SCALA_HOME</span>/bin
 export PATH
 </pre></td></tr></table></figure>
 
-</li>
-</ol>
-<p>2.4 执行 scala，打开 REPL，这是会新起一个 jvm 实例</p>
+<pre><code>执行 scala，打开 REPL，这是会新起一个 jvm 实例</code></pre>
 <figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
 2
 </pre></td><td class="code"><pre>└─&gt; ps -A | grep java
  9919 pts/4    00:00:15 java
 </pre></td></tr></table></figure>
 
+<pre><code><span class="attribute">Tab 补全</code></pre>
+<h3>声明值和变量</h3>
+<pre><code><span class="keyword">val</span>定义常量并不可改变 (可覆盖) (?<span class="keyword">val</span> and <span class="keyword">final</span>)
+可以将多个值或变量放在一起声明 <span class="keyword">val</span> a,b=<span class="number">100</span> 但是<span class="keyword">val</span> a=<span class="number">1</span>,b=<span class="number">1</span>是错的，坑爹！</code></pre>
+<p>  var a,b:String = null //a,b 都是 String<br>    val a=‘1’ // 对的,char<br>    val a=‘123’ // 错的<br>    val a=“123” // 对的,String</p>
+<h3>常用类型</h3>
+<pre><code><span class="number">7</span>种数值类型 (Byte Char Short Long Int Long Float Double) 和 Boolean
+Scala 不可以区分基本类型和引用类型, <span class="number">1.</span>toString()
+<span class="number">1.</span>to(<span class="number">10</span>) <span class="comment">// Range(1, 2, 3, 4)</span>
+交集: <span class="string">"abc"</span><span class="variable">.intersect</span>(<span class="string">"Abd"</span>) <span class="comment">// b ("abc" 被隐式地转换成 StringOps, 所以直接 "abc". Tab 不出 intersect)</span>
+Int-RichInt Double-RichDouble Char-RichChar</code></pre>
+<h3>算术和操作符重载</h3>
+<pre><code>+-*/% &amp;|^ &gt;&gt; &lt;&lt; 实际上是方法
+a+b  ==&gt; a.+(b) 的简写 (? 但是 <span class="number">1</span>+<span class="number">2</span>是 Int <span class="number">3</span>,<span class="number">1.</span>+(<span class="number">2</span>) 是 Double <span class="number">3.0</span>)
+<span class="number">1.</span>to(<span class="number">10</span>) &lt;==&gt; <span class="number">1</span> to <span class="number">10</span>
+没有 ++ -- 。只得 a+=<span class="number">1</span> a-=<span class="number">1</span> 因为设计者认为不值得为了少按一个键额外增加一个特例. 我记得 Python 也没有，理由相同
+val x:BigInt=<span class="number">1234567890</span>;x*x*x=<span class="keyword">...</span> //java 无法重载操作符，所以得 x.multiply(x).multiply(x)
+但是 val x:BigInt=<span class="number">1111111111111111</span>会报 integer number too large <span class="keyword">...</span> (? 初始化时 BigInt 和 Int 的最大值一样)</code></pre>
+<h3>调用函数和方法</h3>
+<pre><code>import scala<span class="variable">.math</span><span class="variable">._</span>   <span class="comment">//_ 通配符</span>
+scala. 开头的包在使用时可以省去前缀 import math<span class="variable">._</span> &lt;==&gt; import scala<span class="variable">.math</span><span class="variable">._</span>(? 如果定义 math 包会怎样？)
+Scala 没有静态方法，类似特性: Singleton Object 单例对象. 一个类对应有一个伴生对象 (Companion Object) 例：BigInt<span class="variable">.probablePrime</span>(<span class="number">100</span>,scala<span class="variable">.util</span><span class="variable">.Random</span>)
+一般地，没有参数且不改变当前对象的方法不带括号</code></pre>
+<h3>apply 方法</h3>
+<pre><code><span class="string">"Hello"</span>(<span class="number">4</span>) <span class="comment">//'o' StringOps</span>
+BigInt(<span class="string">"12345"</span>) <span class="comment">//scala.math.BigInt = 123 新的 Bigint 对象</span>
+<span class="keyword">Array</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">8</span>) <span class="comment">// 返回一个数组</span>
+<span class="keyword">Array</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">8</span>)(<span class="number">0</span>) <span class="comment">// 1</span></code></pre>
+<h3>Scaladoc</h3>
+<h3>练习</h3>
+<pre><code><span class="number">3</span>的平方根: math<span class="variable">.sqrt</span>(<span class="number">3</span>)
+再平方: math<span class="variable">.pow</span>(res1,<span class="number">2</span>)
+res 变量是 al
+<span class="string">"a"</span>*<span class="number">3</span> <span class="comment">//"aaa"</span>
+<span class="number">100</span> max <span class="number">2</span> max <span class="number">41</span> <span class="comment">//100</span>
+BigInt(<span class="number">2</span>)<span class="variable">.pow</span>(<span class="number">1024</span>)
+<span class="string">"abc"</span>(<span class="number">0</span>) <span class="string">"abc"</span>(<span class="string">"abc"</span><span class="variable">.length</span>-<span class="number">1</span>)
+take:<span class="string">"1234"</span><span class="variable">.take</span>(<span class="number">3</span>) <span class="comment">//"123"</span>
+takeRight:<span class="string">"1234"</span><span class="variable">.take</span>(<span class="number">3</span>) <span class="comment">//"234"</span>
+drop:<span class="string">"1234"</span><span class="variable">.drop</span>(<span class="number">3</span>) <span class="comment">//"4"</span>
+drop:<span class="string">"1234"</span><span class="variable">.dropRight</span>(<span class="number">3</span>) <span class="comment">//"1"</span>
+生成随机 BigInt: val random = BigInt(util<span class="variable">.Random</span><span class="variable">.nextInt</span>())
+val sequence=<span class="string">"0123456789abcdefghijklmnopqrstuvwxyz"</span></code></pre>
 
       
     </div>
